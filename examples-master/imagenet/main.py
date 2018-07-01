@@ -235,7 +235,14 @@ def validate(val_loader, model, criterion):
             # compute output
             output = model(input)
             loss = criterion(output, target)
-
+            print("t shirt")
+            print(nn.functional.softmax(output[:,610])*100)
+            print("sweatshirt")
+            print(nn.functional.softmax(output[:,841])*100)
+            print("suit")
+            print(nn.functional.softmax(output[:,834])*100)
+            #print(nn.functional.softmax(output[1,919]))
+            #print(output[919])
             # measure accuracy and record loss
             prec1, prec5 = accuracy(output, target, topk=(1, 5))
             losses.update(loss.item(), input.size(0))
