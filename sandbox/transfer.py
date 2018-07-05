@@ -95,7 +95,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     # load best model weights
     model.load_state_dict(best_model_wts)
     return model
-    
+
 data_dir = './hymenoptera_data'
 
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),
@@ -109,3 +109,9 @@ dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
 class_names = image_datasets['train'].classes
 
 inputs, classes = next(iter(dataloaders['train']))
+
+model_ft = models.resnet18(pretrained=True)
+num_ftrs = model_ft.fc.in_features
+model_ft.fc = nn.Linear(num_ftrs, 2)
+
+print(num_ftrs)
