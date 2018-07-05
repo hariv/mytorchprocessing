@@ -52,9 +52,6 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
 
             # Iterate over data.
             for inputs, labels in dataloaders[phase]:
-                inputs = inputs.to(device)
-                labels = labels.to(device)
-
                 # zero the parameter gradients
                 optimizer.zero_grad()
 
@@ -96,6 +93,32 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
     model.load_state_dict(best_model_wts)
     return model
 
+def visualize_model(model, num_images=6):
+    was_training = model.training
+    model.eval()
+    images_so_far = 0
+    fig = plt.figure()
+
+    with torch.no_grad():
+        for i, (inputs, labels) in enumerate(dataloaders['val']):
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+
+            outputs = model(inputs)
+            _, preds = torch.max(outputs, 1)
+
+            for j in range(inputs.size()[0]):
+                images_so_far += 1
+                ax = plt.subplot(num_images//2, 2, images_so_far)
+                ax.axis('off')
+                ax.set_title('predicted: {}'.format(class_names[preds[j]]))
+                imshow(inputs.cpu().data[j])
+
+                if images_so_far == num_images:
+                    model.train(mode=was_training)
+                    return
+        model.train(mode=was_training)
+
 data_dir = './hymenoptera_data'
 
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),
@@ -110,8 +133,36 @@ class_names = image_datasets['train'].classes
 
 inputs, classes = next(iter(dataloaders['train']))
 
+#Pretraining code:
 model_ft = models.resnet18(pretrained=True)
 num_ftrs = model_ft.fc.in_features
 model_ft.fc = nn.Linear(num_ftrs, 2)
 
-print(num_ftrs)
+criterion = nn.CrossEntropyLoss()
+
+optimizer_ft = optim.SGD(model_ft.parameters(), lr=0.001, momentum=0.9)
+
+exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
+
+model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
+                       num_epochs=25)
+
+#Fine tuning code: 
+model_conv = torchvision.models.resnet18(pretrained=True)
+for param in model_conv.parameters():
+    param.requires_grad = False
+
+# Add fully connected layer at the end of the model.
+# By default, when I create a new layer, its requires_grad is set to true.
+num_ftrs = model_conv.fc.in_features
+model_conv.fc = nn.Linear(num_ftrs, 2)
+
+#rest works the same.
+criterion = nn.CrossEntropyLoss()
+optimizer_conv = optim.SGD(model_conv.fc.parameters(), lr=0.001, momentum=0.9)
+exp_lr_scheduler = lr_scheduler.StepLR(optimizer_conv, step_size=7, gamma=0.1)
+
+model_conv = train_model(model_conv, criterion, optimizer_conv,
+                         exp_lr_scheduler, num_epochs=25)
+
+
