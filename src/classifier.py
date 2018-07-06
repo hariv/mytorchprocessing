@@ -25,10 +25,24 @@ classifier = Classifier(category="dog")
 #imsize = 256*6*6
 #loader = transforms.Compose([transforms.Resize(imsize), transforms.ToTensor()])
 
-im = np.array(Image.open('/Users/harivenugopalan/Downloads/1.jpg').convert("RGB"))
-im = Variable(torch.Tensor(im))
-im = im.unsqueeze(0)
+normalize = transforms.Normalize(
+   mean=[0.485, 0.456, 0.406],
+   std=[0.229, 0.224, 0.225]
+)
+preprocess = transforms.Compose([
+   transforms.Resize(256),
+   transforms.CenterCrop(224),
+   transforms.ToTensor(),
+   normalize
+])
+
+im = Image.open("/Users/harivenugopalan/Downloads/1.jpg")
+im = preprocess(im)
+im.unsqueeze_(0)
+im = Variable(im)
+#im = np.array(Image.open('/Users/harivenugopalan/Downloads/1.jpg').convert("RGB"))
+#im = Variable(torch.Tensor(im))
+#im = im.unsqueeze_(0)
 #im = loader(im).float()
 #im = Variable(im, requires_grad=True)
-print("hi")
 print(classifier.predict(im))
