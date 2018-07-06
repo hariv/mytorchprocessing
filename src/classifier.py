@@ -5,44 +5,42 @@ import torchvision
 import torchvision.transforms as transforms
 import time
 import os
-import copy
-import json
 from torch.autograd import Variable
 from PIL import Image
-import numpy as np
 
 class Classifier():
-	
-	def __init__(self, category, model="alexnet"):
+	normalize = transforms.Normalize(
+   		mean=[0.485, 0.456, 0.406],
+   		std=[0.229, 0.224, 0.225]
+   	)
+
+	preprocess = transforms.Compose([
+   		transforms.Resize(256),
+   		transforms.CenterCrop(224),
+   		transforms.ToTensor(),
+   		normalize
+   	])
+
+	def __init__(self, category, model="vgg19"):
 		self.model = torchvision.models.__dict__[model](pretrained=True)
 		self.category = category
 
+	def readImage(self, path):
+		if(os.path.exists(path)):
+			return Image.open(path)
+		else:
+			raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), path)
+
+	def preprocessImage(self, img):
+		img = Classifier.preprocess(img)
+		img.unsqueeze_(0)
+		return img
+	
 	def predict(self, img):
 		prediction = self.model(img)
 		return prediction
 
 classifier = Classifier(category="dog")
-#imsize = 256*6*6
-#loader = transforms.Compose([transforms.Resize(imsize), transforms.ToTensor()])
-
-normalize = transforms.Normalize(
-   mean=[0.485, 0.456, 0.406],
-   std=[0.229, 0.224, 0.225]
-)
-preprocess = transforms.Compose([
-   transforms.Resize(256),
-   transforms.CenterCrop(224),
-   transforms.ToTensor(),
-   normalize
-])
-
-im = Image.open("/Users/harivenugopalan/Downloads/1.jpg")
-im = preprocess(im)
-im.unsqueeze_(0)
-im = Variable(im)
-#im = np.array(Image.open('/Users/harivenugopalan/Downloads/1.jpg').convert("RGB"))
-#im = Variable(torch.Tensor(im))
-#im = im.unsqueeze_(0)
-#im = loader(im).float()
-#im = Variable(im, requires_grad=True)
-print(classifier.predict(im))
+image = classifier.readImage("/Users/harivenugopalan/Downloads/1.jpg")
+image = classifier.preprocessImage(image)
+print(classifier.predict(image))
