@@ -31,16 +31,21 @@ class Classifier():
 		else:
 			raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), path)
 
-	def preprocessImage(self, img):
+	def prepare(self, img):
 		img = Classifier.preprocess(img)
 		img.unsqueeze_(0)
 		return img
 	
-	def predict(self, img):
-		prediction = self.model(img)
-		return prediction
+	def getEnergy(self, img):
+		return self.model(img)
+
+	def getProbability(self, energy):
+		return nn.functional.softmax(energy)
+
+	def getPrediction(self, img):
+		return self.getProbability(self.getEnergy(img))
 
 classifier = Classifier(category="dog")
 image = classifier.readImage("/Users/harivenugopalan/Downloads/1.jpg")
-image = classifier.preprocessImage(image)
+image = classifier.prepare(image)
 print(classifier.predict(image))
