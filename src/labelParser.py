@@ -7,8 +7,8 @@ class LabelParser():
 		with open(self.path) as f:
 			content = f.readlines()
 			content = [x.strip() for x in content]
-			for lines in content:
-				self.labels.add(line)
-				
+			for line in content:
+				self.labels.append(line)
+
 	def getLabels(self):
 		return self.labels
