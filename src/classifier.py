@@ -7,6 +7,7 @@ import time
 import os
 from torch.autograd import Variable
 from PIL import Image
+from labelParser import LabelParser
 
 class Classifier():
 	normalize = transforms.Normalize(
@@ -42,10 +43,15 @@ class Classifier():
 	def getProbability(self, energy):
 		return nn.functional.softmax(energy)
 
-	def getPrediction(self, img):
+	def getPredictionProbability(self, img):
 		return self.getProbability(self.getEnergy(img))
+
+	def loadLabels(self):
+		labelParser = LabelParser('./labels.txt')
+		labelParser.parseLabels()
+		self.labels = labelParser.getLabels()
 
 classifier = Classifier(category="dog")
 image = classifier.readImage("/Users/harivenugopalan/Downloads/1.jpg")
 image = classifier.prepare(image)
-print(classifier.predict(image))
+print(classifier.getPredictionProbability(image))
