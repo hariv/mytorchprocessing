@@ -23,9 +23,9 @@ class Classifier():
    		normalize
    	])
 
-	def __init__(self, category, model="vgg19"):
+	def __init__(self, categories, model="alexnet"):
 		self.model = torchvision.models.__dict__[model](pretrained=True)
-		self.category = category
+		self.categories = np.asarray(categories)
 		self.loadLabels()
 
 	def readImage(self, path):
@@ -74,9 +74,12 @@ class Classifier():
 		indices = self.getTopKProbabilityIndices(probability, k)
 		return self.labels[indices]
 
-classifier = Classifier(category="dog")
+	def getCategoryProbabilities(self, probability):
+		indices = np.where(np.isin(self.labels, self.categories))[0]
+		probabilities = probability.detach().numpy()[0]
+		return probabilities[indices]
+
+classifier = Classifier(categories=['street sign,', 'jay,', 'magpie,'])
 image = classifier.readImage("/Users/harivenugopalan/Downloads/1.jpg")
 image = classifier.prepare(image)
 probability = classifier.getPredictionProbability(image)
-print(classifier.getTopKClassLabels(probability, 3))
-#print(classifier.getTopProbabilityClassLabel(probability))
