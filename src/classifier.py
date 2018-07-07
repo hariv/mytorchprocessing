@@ -5,6 +5,7 @@ import torchvision
 import torchvision.transforms as transforms
 import time
 import os
+import numpy as np
 from torch.autograd import Variable
 from PIL import Image
 from labelParser import LabelParser
@@ -25,6 +26,7 @@ class Classifier():
 	def __init__(self, category, model="vgg19"):
 		self.model = torchvision.models.__dict__[model](pretrained=True)
 		self.category = category
+		self.loadLabels()
 
 	def readImage(self, path):
 		if(os.path.exists(path)):
@@ -41,7 +43,7 @@ class Classifier():
 		return self.model(img)
 
 	def getProbability(self, energy):
-		return nn.functional.softmax(energy)
+		return nn.functional.softmax(energy,dim=1)
 
 	def getPredictionProbability(self, img):
 		return self.getProbability(self.getEnergy(img))
@@ -49,9 +51,32 @@ class Classifier():
 	def loadLabels(self):
 		labelParser = LabelParser('./labels.txt')
 		labelParser.parseLabels()
-		self.labels = labelParser.getLabels()
+		self.labels = np.asarray(labelParser.getLabels())
+
+	def getTopProbability(self, probability):
+		return self.getTopKProbabilities(probability, 1)
+
+	def getTopProbabilityIndex(self, probability):
+		return self.getTopKProbabilityIndices(probability, 1)
+
+	def getTopClassLabel(self, probability):
+		return self.getTopKClassLabels(probability, 1)
+
+	def getTopKProbabilities(self, probability, k):
+		maxProbability, index = torch.topk(probability, k, dim=1)
+		return maxProbability[0].detach().numpy()
+
+	def getTopKProbabilityIndices(self, probability, k):
+		maxProbability, index = torch.topk(probability, k, dim=1)
+		return index[0].numpy()
+
+	def getTopKClassLabels(self, probability, k):
+		indices = self.getTopKProbabilityIndices(probability, k)
+		return self.labels[indices]
 
 classifier = Classifier(category="dog")
 image = classifier.readImage("/Users/harivenugopalan/Downloads/1.jpg")
 image = classifier.prepare(image)
-print(classifier.getPredictionProbability(image))
+probability = classifier.getPredictionProbability(image)
+print(classifier.getTopKClassLabels(probability, 3))
+#print(classifier.getTopProbabilityClassLabel(probability))
