@@ -79,8 +79,3 @@ class Classifier():
 		indices = np.where(np.isin(self.labels, self.categories))[0]
 		probabilities = probability.detach().numpy()[0]
 		return probabilities[indices]
-
-'''classifier = Classifier(categories=['street sign,', 'jay,', 'magpie,'])
-image = classifier.readImage("/Users/harivenugopalan/Downloads/1.jpg")
-image = classifier.prepare(image)
-probability = classifier.getPredictionProbability(image)'''
