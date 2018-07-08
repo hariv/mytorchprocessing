@@ -23,9 +23,10 @@ class Classifier():
    		normalize
    	])
 
-	def __init__(self, categories, model="alexnet"):
+	def __init__(self, categories, model="alexnet", labelsPath):
 		self.model = torchvision.models.__dict__[model](pretrained=True)
 		self.categories = np.asarray(categories)
+		self.labelsPath = labelsPath
 		self.loadLabels()
 
 	def readImage(self, path):
@@ -49,7 +50,7 @@ class Classifier():
 		return self.getProbability(self.getEnergy(img))
 
 	def loadLabels(self):
-		labelParser = LabelParser('./labels.txt')
+		labelParser = LabelParser(self.labelsPath)
 		labelParser.parseLabels()
 		self.labels = np.asarray(labelParser.getLabels())
 
