@@ -23,7 +23,7 @@ class Classifier():
    		normalize
    	])
 
-	def __init__(self, categories, model="alexnet", labelsPath):
+	def __init__(self, categories, model="alexnet", labelsPath="./labels.txt"):
 		self.model = torchvision.models.__dict__[model](pretrained=True)
 		self.categories = np.asarray(categories)
 		self.labelsPath = labelsPath
