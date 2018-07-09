@@ -25,7 +25,7 @@ class Classifier():
    		normalize
    	])
 
-	def __init__(self, categories, model="alexnet", labelsPath="./labels.txt"):
+	def __init__(self, categories, model="alexnet", labelsPath):
 		self.model = torchvision.models.__dict__[model](pretrained=True)
 		# Categories are standard types passed in by the user whose probabilities are always reported.
 		self.categories = np.asarray(categories)
