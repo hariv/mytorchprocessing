@@ -38,6 +38,6 @@ such as:
 * getTopKProbabilities(probabilities) - get 'k' top predicted probabilities
 * get TopKProbabilityIndices(probabilities) - get indices of classes with 'k' highest probabilities
 * getgetTopKClassLabels(probabilities) - get labels of classes with 'k' highest probabilities
-*getCategoryProbabilities(probabilities) - get prediction probabilities for each of the interested category labels.
+* getCategoryProbabilities(probabilities) - get prediction probabilities for each of the interested category labels.
 
 Code demo available at src/demo.py
