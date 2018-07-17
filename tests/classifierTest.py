@@ -1,7 +1,7 @@
 import unittest
 import torch
 import torch.nn as nn
-from ../src/classifier export Classifier
+from classifier import Classifier
 
 class ClassifierTest(unittest.TestCase):
 	
