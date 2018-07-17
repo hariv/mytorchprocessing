@@ -41,3 +41,8 @@ such as:
 * getCategoryProbabilities(probabilities) - get prediction probabilities for each of the interested category labels.
 
 Code demo available at src/demo.py
+
+Run unit tests by running:
+```
+python -m tests.classifierTest
+```
