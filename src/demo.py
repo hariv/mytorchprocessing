@@ -1,6 +1,7 @@
 from labelParser import LabelParser
+from classifier import Classifier
 
-classifier = Classifier(categories=['street sign,', 'suit,', 'magpie,', 'jay,', 'sunglasses,'])
+classifier = Classifier(categories=['street sign,', 'suit,', 'magpie,', 'jay,', 'sunglasses,'], labelsPath='../labels.txt')
 image = classifier.readImage('../1.jpg')
 image = classifier.prepare(image)
 
