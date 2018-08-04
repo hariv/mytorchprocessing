@@ -45,6 +45,11 @@ class Classifier():
 		else:
 			raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), path)
 
+	def imshow(self, img):
+		img = img / 2 + 0.5
+		npimg = img.numpy()
+		plt.imshow(np.transpose(npimg, (1, 2, 0)))
+		
 	def prepare(self, img):
 		img = Classifier.preprocess(img)
 		img.unsqueeze_(0)
