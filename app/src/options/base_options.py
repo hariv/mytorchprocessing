@@ -1,17 +1,16 @@
 import argparse
 import os
-from util import util
+#from util import util
 import torch
-import models
+#import models
 import data
 
-
 class BaseOptions():
-	def __init__(self):
-		self.initialized = False
+    def __init__(self):
+        self.initialized = False
 
-	def initialize(self, parser):
-		parser.add_argument('--dataroot', required=True, help='path to images')
+    def initialize(self, parser):
+        parser.add_argument('--dataroot', required=True, help='path to images')
         parser.add_argument('--batchSize', type=int, default=1, help='input batch size')
         parser.add_argument('--loadWidth', type=int, default=1024, help='scale images to this size')
         parser.add_argument('--fineSize', type=int, default=1024, help='then crop to this size')
@@ -22,10 +21,8 @@ class BaseOptions():
 
     def gather_options(self):
         if not self.initialized:
-            parser = argparse.ArgumentParser(
-                formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+            parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
             parser = self.initialize(parser)
-
         opt, _ = parser.parse_known_args()
         self.parser = parser
 
@@ -45,7 +42,7 @@ class BaseOptions():
 
         # save to the disk
         expr_dir = os.path.join(opt.checkpoints_dir, opt.name)
-        util.mkdirs(expr_dir)
+        #util.mkdirs(expr_dir)
         file_name = os.path.join(expr_dir, 'opt.txt')
         with open(file_name, 'wt') as opt_file:
             opt_file.write(message)
@@ -55,7 +52,7 @@ class BaseOptions():
 
         opt = self.gather_options()
         print(opt)
-        
+
         opt.isTrain = self.isTrain   # train or test
 
         # process opt.suffix
