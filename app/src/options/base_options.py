@@ -54,6 +54,8 @@ class BaseOptions():
     def parse(self):
 
         opt = self.gather_options()
+        print(opt)
+        
         opt.isTrain = self.isTrain   # train or test
 
         # process opt.suffix
