@@ -55,11 +55,6 @@ class BaseOptions():
 
         opt.isTrain = self.isTrain   # train or test
 
-        # process opt.suffix
-        if opt.suffix:
-            suffix = ('_' + opt.suffix.format(**vars(opt))) if opt.suffix != '' else ''
-            opt.name = opt.name + suffix
-
         self.print_options(opt)
 
         # set gpu ids
