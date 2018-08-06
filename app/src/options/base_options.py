@@ -16,6 +16,7 @@ class BaseOptions():
         parser.add_argument('--fineSize', type=int, default=1024, help='then crop to this size')
         parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
         parser.add_argument('--name', type=str, default='general', help='which trained model to run')
+        parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
         self.initialized = True
         return parser
 
