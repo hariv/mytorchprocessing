@@ -27,13 +27,6 @@ class BaseOptions():
             parser = self.initialize(parser)
 
         opt, _ = parser.parse_known_args()
-
-        parser = model_option_setter(parser, self.isTrain)
-        opt, _ = parser.parse_known_args()  # parse again with the new defaults
-
-        dataset_option_setter = data.get_option_setter(dataset_name)
-        parser = dataset_option_setter(parser, self.isTrain)
-
         self.parser = parser
 
         return parser.parse_args()
