@@ -7,9 +7,9 @@ if __name__ == '__main__':
 	opt = TrainOptions().parse()
 	
 	data_loader = CreateDataLoader(opt)
-	dataset = data_loader.load_data()
+	train_dataset = data_loader.load_train_data()
 
-	dataset_size = len(data_loader)
+	train_dataset_size = len(train_dataset)
     print('#training images = %d' % dataset_size)
 
     classifier = create_model(opt)

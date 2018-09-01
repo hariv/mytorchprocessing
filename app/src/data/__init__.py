@@ -40,8 +40,14 @@ class CustomDatasetDataLoader(BaseDataLoader):
             shuffle=not opt.serial_batches,
             num_workers=int(opt.nThreads))
 
-    def load_data(self):
-        return self
+    def load_train_data(self):
+        return self.train_loader
+
+    def load_val_data(self):
+        return self.val_loader
+
+    def load_test_data(self):
+        return self.test_loader
 
     def __len__(self):
         return min(len(self.dataset), self.opt.max_dataset_size)
