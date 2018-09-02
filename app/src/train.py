@@ -42,7 +42,7 @@ if __name__ == '__main__':
                 print('saving the latest model (epoch %d, total_steps %d)' %
                       (epoch, total_steps))
                 
-                "?;.save_networks('latest')
+                model.save_networks('latest')
 
             iter_data_time = time.time()
         if epoch % opt.save_epoch_freq == 0:
