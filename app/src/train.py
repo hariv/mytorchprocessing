@@ -8,6 +8,7 @@ if __name__ == '__main__':
 	
 	data_loader = CreateDataLoader(opt)
 	train_dataset = data_loader.load_train_data()
+	num_classes = data_loader.get_num_classes()
 
 	train_dataset_size = len(train_dataset)
     print('#training images = %d' % dataset_size)
