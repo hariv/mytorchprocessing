@@ -13,7 +13,7 @@ if __name__ == '__main__':
 	train_dataset_size = len(train_dataset)
     print('#training images = %d' % dataset_size)
 
-    classifier = create_model(opt)
+    classifier = create_model(opt, num_classes)
     classifier.setup(opt)
 
     for epoch in range(opt.epoch_count, opt.niter):
