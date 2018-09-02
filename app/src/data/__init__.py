@@ -22,7 +22,7 @@ class CustomDatasetDataLoader(BaseDataLoader):
         self.valdir = os.path.join(opt.dataset_name, 'val')
         self.testdir = os.path.join(opt.dataset_name, 'test')
 
-        self.num_classes = sum(os.path.isdir(i) for i in os.listdir(opt.dataset_name))
+        self.num_classes = sum(os.path.isdir(i) for i in os.listdir(os.path.join(opt.dataset_name, 'train')))
         
         self.train_loader = torch.utils.data.DataLoader(
             self.traindir,
