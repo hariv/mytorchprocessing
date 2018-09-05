@@ -51,8 +51,13 @@ class BaseModel():
     def get_image_paths(self):
         return self.image_paths
 
+    def set_requires_grad(self, requires_grad):
+        for param in self.network.parameters():
+            param.requires_grad = requires_grad
+
     def optimize_parameters(self):
-        pass
+        self.forward()
+        self.set_requires_grad(True)
 
     def update_learning_rate(self):
         for scheduler in self.schedulers:
@@ -122,11 +127,3 @@ class BaseModel():
                     print(net)
                 print('[Network %s] Total number of parameters : %.3f M' % (name, num_params / 1e6))
         print('-----------------------------------------------')
-
-    def set_requires_grad(self, nets, requires_grad=False):
-        if not isinstance(nets, list):
-            nets = [nets]
-        for net in nets:
-            if net is not None:
-                for param in net.parameters():
-                    param.requires_grad = requires_grad
