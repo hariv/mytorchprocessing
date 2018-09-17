@@ -1,19 +1,28 @@
-import torchvision.models as models
-
+import importlib
 from models.base_model import BaseModel
 
-class Model(BaseModel):
-    def name(self):
-        return self.name
+def get_model_class():
+    model_filename = "models.model"
+    modellib = importlib.import_module(model_filename)
 
-    def initialize(self, opt, data):
-        BaseModel.initialize(self, opt)
-        self.isTrain = opt.isTrain
-        self.name = opt.arch
-        self.lossName = 'L1'
-        self.network = models.__dict__[opt.arch](**data)
+    model = None
+    for name, cls in modellib.__dict__.items():
+        if(issubclass(cls, BaseModel)):
+            model = cls
 
+    if model is None:
+        print("Unable to find model")
+        exit(0)
+
+    return model
+                
+def get_option_setter(model_name):
+    model_class = get_model_class()
+    
 def create_model(opt, num_classes):
+    model = get_model_class()
+    instance = model()
     data = {'num_classes': num_classes}
-    model = Model(opt, data)
-    #model = models.__dict__[opt.arch]
+    instance.initialize(opt, data)
+    print("model [%s] was created" % (instance.name()))
+    return instance
