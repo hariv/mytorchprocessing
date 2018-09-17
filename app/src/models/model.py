@@ -19,3 +19,13 @@ class Model(BaseModel):
         self.network = m.__dict__[opt.arch](**data)
         self.criterion = nn.L1Loss()
         self.optimizer = torch.optim.SGD(self.network.parameters(), opt.lr, momentum=opt.momentum, weight_decay=opt.weight_decay)
+
+    def forward(self):
+        self.output = nn.functional.softmax(self.network(input))
+
+    def backward(self):
+        self.loss = self.criterion(self.output, self.target)
+        
+    def optimize_parameters(self):
+        self.forward()
+        self.backward()
