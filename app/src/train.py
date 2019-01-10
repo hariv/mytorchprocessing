@@ -2,7 +2,6 @@ from options.train_options import TrainOptions
 from data import CreateDataLoader
 from models import create_model
 
-
 if __name__ == '__main__':
         opt = TrainOptions().parse()
 	data_loader = CreateDataLoader(opt)
@@ -20,15 +19,16 @@ if __name__ == '__main__':
                 iter_data_time = time.time()
                 epoch_iter = 0
 
-                for i, data in enumerate(dataset):
+                for i, (input, target) in enumerate(train_dataset):
                         iter_start_time = time.time()
                         if total_steps % opt.print_freq == 0:
                                 t_data = iter_start_time - iter_data_time
 
                         total_steps += opt.batchSize
                         epoch_iter += opt.batchSize
-                        classifier.set_input(data)
-                        classifier.optimize_parameters()
+                        model.set_input(input)
+                        model.set_target(target)
+                        model.optimize_parameters()
 
                         if total_steps % opt.display_freq == 0:
                                 save_result = total_steps % opt.update_html_freq == 0
