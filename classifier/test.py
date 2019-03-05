@@ -10,7 +10,9 @@ if __name__ == '__main__':
     opt.batch_size = 1
     opt.display_id = -1
     
-    print(opt)
+    model = create_model(opt)
+    
+    #print(opt)
 #dataset = create_dataset(opt)
     #model = create_model(opt)
     #model.setup(opt)         

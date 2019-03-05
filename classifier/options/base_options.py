@@ -20,7 +20,8 @@ class BaseOptions():
 
         parser.add_argument('--no_dropout', action='store_true', help='no dropout for the generator')
         parser.add_argument('--batch_size', type=int, default=1, help='input batch size')
-        
+        parser,add_argument('--num_classes', type=int, default=2, help='# of output classes')
+
         self.initialize = True
         return parser
     
@@ -31,10 +32,10 @@ class BaseOptions():
             parser = self.initialize(parser)
             
         opt, _ = parser.parse_known_args()
-        model_name = opt.model
-        model_option_setter = models.get_option_setter(model_name)
-        parser = model_option_setter(parser, self.isTrain)
-        opt, _ = parser.parse_known_args()
+        #model_name = opt.model
+        #model_option_setter = models.get_option_setter(model_name)
+        #parser = model_option_setter(parser, self.isTrain)
+        #opt, _ = parser.parse_known_args()
         
         #dataset_name = opt.dataset_mode
         #dataset_option_setter = data.get_option_setter(dataset_name)
