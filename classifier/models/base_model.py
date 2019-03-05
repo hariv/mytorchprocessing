@@ -1,10 +1,9 @@
 import os
 import torch
 from collections import OrderedDict
-from abc import ABC, abstractmethod
 from . import networks
 
-class BaseModel(ABC):
+class BaseModel():
     
     def __init__(self, opt):
         self.opt = opt
@@ -18,22 +17,19 @@ class BaseModel(ABC):
         self.net_name = ""
         self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
         self.net = None
-        
-    @staticmethod
-    def modify_commandline_options(parser, is_train):
-        return parser
 
-    @abstractmethod
     def set_input(self, input):
-        pass
+        self.image = input.to(self.device)
     
-    @abstractmethod
     def forward(self):
-        pass
+        self.probabilities = self.net(self.image)
     
-    @abstractmethod
     def optimize_parameters(self):
-        pass
+        self.forward()
+        self.set_requires_grad(self.net, True)
+        self.optimizer.zero_grad()
+        self.backward()
+        self.optimizer.step()
     
     def setup(self, opt):
         if self.isTrain:
