@@ -15,16 +15,16 @@ class Classifier():
 	normalize = transforms.Normalize(
    		mean=[0.485, 0.456, 0.406],
    		std=[0.229, 0.224, 0.225]
-   	)
-
+		)
+	
 	# Preprocess inputs before passing to model. Static method.
 	preprocess = transforms.Compose([
    		transforms.Resize(256),
    		transforms.CenterCrop(224),
    		transforms.ToTensor(),
    		normalize
-   	])
-
+		])
+	
 	def __init__(self, categories, labelsPath, model="alexnet"):
 		self.model = torchvision.models.__dict__[model](pretrained=True)
 		# Categories are standard types passed in by the user whose probabilities are always reported.
@@ -57,7 +57,9 @@ class Classifier():
 	
 	# Energy is model output just before going to softmax.
 	def getEnergy(self, img):
-		return self.model(img)
+		energy = self.model(img)
+		return energy.detach().numpy()
+	#return self.model(img)
 
 	# Model output with softmax.	
 	def getProbability(self, energy):
@@ -99,27 +101,3 @@ class Classifier():
 		indices = np.where(np.isin(self.labels, self.categories))[0]
 		probabilities = probability.detach().numpy()[0]
 		return probabilities[indices]
-
-	def train:
-		for epoch in range(2):  # loop over the dataset multiple times
-
-    running_loss = 0.0
-    for i, data in enumerate(trainloader, 0):
-        # get the inputs
-        inputs, labels = data
-
-        # zero the parameter gradients
-        optimizer.zero_grad()
-
-        # forward + backward + optimize
-        outputs = net(inputs)
-        loss = criterion(outputs, labels)
-        loss.backward()
-        optimizer.step()
-
-        # print statistics
-        running_loss += loss.item()
-        if i % 2000 == 1999:    # print every 2000 mini-batches
-            print('[%d, %5d] loss: %.3f' %
-                  (epoch + 1, i + 1, running_loss / 2000))
-            running_loss = 0.0
