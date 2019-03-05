@@ -5,9 +5,9 @@ import torchvision.models as models
 
 class BaseModel():
 
-	@staticmethod
-	def modify_commandline_options(parser, is_train):
-		return parser
+        @staticmethod
+        def modify_commandline_options(parser, is_train):
+                return parser
 
 	def name(self):
 		return 'BaseModel'
@@ -24,11 +24,12 @@ class BaseModel():
         self.model_names = []
         self.image_paths = []
 
-    def set_input(self, input):
-    	self.input = input
+        def set_input(self, input):
+    	        self.input = input
 
-    def forward(self):
-    	pass
+        
+        def forward(self):
+    	        pass
 
     def setup(self, opt, parser=None):
     	if self.isTrain:

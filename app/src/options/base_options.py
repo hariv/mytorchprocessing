@@ -1,9 +1,9 @@
 import argparse
 import os
-#from util import util
 import torch
-#import models
 import data
+import util import util
+import models
 
 class BaseOptions():
     def __init__(self):
@@ -15,8 +15,9 @@ class BaseOptions():
         parser.add_argument('--loadWidth', type=int, default=1024, help='scale images to this size')
         parser.add_argument('--fineSize', type=int, default=1024, help='then crop to this size')
         parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
-        parser.add_argument('--name', type=str, default='general', help='which trained model to run')
+        parser.add_argument('--name', type=str, default='general', help='a name given to the model being used')
         parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
+        parser.add_argument('--model', type=str, default='alexnet', help='which standard model to use')
         self.initialized = True
         return parser
 
@@ -25,8 +26,15 @@ class BaseOptions():
             parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
             parser = self.initialize(parser)
         opt, _ = parser.parse_known_args()
-        self.parser = parser
 
+        model_name = opt.model
+        model_option_setter = models.get_option_setter(model_name)
+        parser = model_option_setter(parser, self.isTrain)
+        opt, _ = parser.parse_known_args()
+
+        #dataset_name = opt
+        self.parser = parser
+        
         return parser.parse_args()
 
     def print_options(self, opt):
@@ -41,9 +49,8 @@ class BaseOptions():
         message += '----------------- End -------------------'
         print(message)
 
-        # save to the disk
         expr_dir = os.path.join(opt.checkpoints_dir, opt.name)
-        #util.mkdirs(expr_dir)
+        util.mkdirs(expr_dir)
         file_name = os.path.join(expr_dir, 'opt.txt')
         with open(file_name, 'wt') as opt_file:
             opt_file.write(message)
@@ -52,13 +59,10 @@ class BaseOptions():
     def parse(self):
 
         opt = self.gather_options()
-        print(opt)
-
-        opt.isTrain = self.isTrain   # train or test
+        opt.isTrain = self.isTrain
 
         self.print_options(opt)
 
-        # set gpu ids
         str_ids = opt.gpu_ids.split(',')
         opt.gpu_ids = []
         for str_id in str_ids:

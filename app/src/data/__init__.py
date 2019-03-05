@@ -1,7 +1,6 @@
 import importlib
 import torch.utils.data
 import os
-from data.base_data_loader import BaseDataLoader
 from data.base_dataset import BaseDataset
 
 def CreateDataLoader(opt):
@@ -11,13 +10,11 @@ def CreateDataLoader(opt):
 
 ## Wrapper class of Dataset class that performs
 ## multi-threaded data loading
-class CustomDatasetDataLoader(BaseDataLoader):
+class CustomDatasetDataLoader():
     def name(self):
         return 'CustomDatasetDataLoader'
 
     def initialize(self, opt):
-        BaseDataLoader.initialize(self, opt)
-        
         self.traindir = os.path.join(opt.dataset_name, 'train')
         self.valdir = os.path.join(opt.dataset_name, 'val')
         self.testdir = os.path.join(opt.dataset_name, 'test')
