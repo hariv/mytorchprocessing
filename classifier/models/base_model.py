@@ -24,6 +24,9 @@ class BaseModel():
     def forward(self):
         self.probabilities = self.net(self.image)
     
+    def backward(self):
+        pass
+            
     def optimize_parameters(self):
         self.forward()
         self.set_requires_grad(self.net, True)

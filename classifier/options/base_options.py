@@ -31,17 +31,7 @@ class BaseOptions():
             parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
             parser = self.initialize(parser)
             
-        opt, _ = parser.parse_known_args()
-        #model_name = opt.model
-        #model_option_setter = models.get_option_setter(model_name)
-        #parser = model_option_setter(parser, self.isTrain)
-        #opt, _ = parser.parse_known_args()
-        
-        #dataset_name = opt.dataset_mode
-        #dataset_option_setter = data.get_option_setter(dataset_name)
-        #parser = dataset_option_setter(parser, self.isTrain)
-        
-        
+        opt, _ = parser.parse_known_args()    
         self.parser = parser
         return parser.parse_args()
 
