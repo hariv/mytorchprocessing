@@ -2,6 +2,7 @@ import os
 import torch
 from collections import OrderedDict
 from . import networks
+import torchvision.models
 
 class BaseModel():
     
@@ -11,18 +12,23 @@ class BaseModel():
         self.isTrain = opt.isTrain
         self.device = torch.device('cuda:{}'.format(self.gpu_ids[0])) if self.gpu_ids else torch.device('cpu')
         
-        self.loss = None
+        self.loss = torch.nn.CrossEntropyLoss().cuda()
         self.optimizer = None
         self.metric = None
-        self.net_name = ""
+        self.net_name = opt.name
         self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
-        self.net = None
+        data = {'num_classes': opt.num_classes}
+        self.net  = torchvision.models.__dict__[opt.model](**data)
 
-    def set_input(self, input):
+    def set_input(self, input, target):
         self.image = input.to(self.device)
+        self.target = target.to(self.device)
     
     def forward(self):
-        self.probabilities = self.net(self.image)
+        if self.isTrain:
+            self.output = self.net(self.image)
+        else:
+            self.output = torch.nn.Softmax(self.net(self.image))
     
     def backward(self):
         pass

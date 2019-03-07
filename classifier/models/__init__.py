@@ -3,7 +3,8 @@ import torchvision.models
 from models.base_model import BaseModel
 
 def create_model(opt):
-    data = {'num_classes': opt.num_classes}
-    model = torchvision.models.__dict__[opt.model](**data)
+    #data = {'num_classes': opt.num_classes}
+    #model = torchvision.models.__dict__[opt.model](**data)
+    model = BaseModel(opt)
     print("model [%s] was created" % opt.model)
-    return instance
+    return model
