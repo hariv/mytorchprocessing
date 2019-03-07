@@ -25,12 +25,16 @@ class BaseModel():
     def set_input(self, input, target):
         self.image = input.to(self.device)
         self.target = target.to(self.device)
+        
+    def get_prediction(self):
+        return self.probabilities
+    
+    def get_loss(self):
+        return self.criterion(self.output, self.target)
     
     def forward(self):
-        if self.isTrain:
-            self.output = self.net(self.image)
-        else:
-            self.output = torch.nn.Softmax(self.net(self.image))
+        self.output = self.net(self.image)
+        self.probabilities = torch.nn.Softmax(self.output)
     
     def backward(self):
         self.loss = self.criterion(self.output, self.target)
