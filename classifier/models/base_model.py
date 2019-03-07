@@ -66,7 +66,7 @@ class BaseModel():
         print('learning rate = %.7f' % lr)
         
     def get_current_loss(self):
-        return float(self.loss)
+        return float(self.criterion)
 
     def save_networks(self, epoch):
         save_filename = '%s_net_%s_%s.pth' % (epoch, self.net_name, self.name)
