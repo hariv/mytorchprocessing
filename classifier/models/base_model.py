@@ -15,10 +15,12 @@ class BaseModel():
         self.criterion = torch.nn.CrossEntropyLoss().cuda()
         self.optimizer = None
         self.metric = None
-        self.net_name = opt.name
-        self.save_dir = os.path.join(opt.checkpoints_dir, opt.name)
+        self.name = opt.name
+        self.net_name = opt.model
+        self.save_dir = os.path.join(opt.checkpoints_dir, self.name)
         data = {'num_classes': opt.num_classes}
-        self.net  = torchvision.models.__dict__[opt.model](**data)
+        
+        self.net  = torchvision.models.__dict__[self.net_name](pretrained=opt.pretrained, **data)
 
     def set_input(self, input, target):
         self.image = input.to(self.device)
@@ -67,7 +69,7 @@ class BaseModel():
         return float(self.loss)
 
     def save_networks(self, epoch):
-        save_filename = '%s_net_%s_%s.pth' % (epoch, opt.model, self.net_name)
+        save_filename = '%s_net_%s_%s.pth' % (epoch, self.net_name, self.name)
         save_path = os.path.join(self.save_dir, save_filename)
         
         if len(self.gpu_ids) > 0 and torch.cuda.is_available():
@@ -88,7 +90,7 @@ class BaseModel():
             self.__patch_instance_norm_state_dict(state_dict, getattr(module, key), keys, i + 1)
             
     def load_networks(self, epoch):
-        load_filename = '%s_net_%s_%s.pth' % (epoch, opt.model, self.net_name)
+        load_filename = '%s_net_%s_%s.pth' % (epoch, self.net_name, self.name)
         load_path = os.path.join(self.save_dir, load_filename)
         
         if isinstance(self.net, torch.nn.DataParallel):

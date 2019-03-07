@@ -10,7 +10,7 @@ class BaseOptions():
         self.initialized = False
         
     def initialize(self, parser):
-        parser.add_argument('--dataroot', required=True, help='path to images (should have subfolders trainA, trainB, valA, valB, etc)')
+        parser.add_argument('--dataroot', required=True, help='path to images (should have subfolders')
         parser.add_argument('--name', type=str, default='imagenet', help='name of the experiment. It decides where to store samples and models')
         parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
         parser.add_argument('--checkpoints_dir', type=str, default='./checkpoints', help='models are saved here')
@@ -18,10 +18,11 @@ class BaseOptions():
         parser.add_argument('--model', type=str, default='alexnet', help='chooses which model to use. [alexnet | resnet | vgg]')
         parser.add_argument('--input_nc', type=int, default=3, help='# of input image channels: 3 for RGB and 1 for grayscale')
 
-        parser.add_argument('--no_dropout', action='store_true', help='no dropout for the generator')
+        parser.add_argument('--no_dropout', action='store_true', help='no dropout for classifier')
         parser.add_argument('--batch_size', type=int, default=1, help='input batch size')
-        parser,add_argument('--num_classes', type=int, default=2, help='# of output classes')
-
+        parser.add_argument('--num_classes', type=int, default=2, help='# of output classes')
+        parser.add_argument('--pretrained', action='store_true', help='initialize model with pretrained weights from imagenet')
+        
         self.initialize = True
         return parser
     
