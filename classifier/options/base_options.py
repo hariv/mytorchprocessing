@@ -74,4 +74,3 @@ class BaseOptions():
 
         self.opt = opt
         return self.opt
-        
