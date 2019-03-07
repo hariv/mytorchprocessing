@@ -12,7 +12,7 @@ class BaseModel():
         self.isTrain = opt.isTrain
         self.device = torch.device('cuda:{}'.format(self.gpu_ids[0])) if self.gpu_ids else torch.device('cpu')
         
-        self.loss = torch.nn.CrossEntropyLoss().cuda()
+        self.criterion = torch.nn.CrossEntropyLoss().cuda()
         self.optimizer = None
         self.metric = None
         self.net_name = opt.name
@@ -31,7 +31,8 @@ class BaseModel():
             self.output = torch.nn.Softmax(self.net(self.image))
     
     def backward(self):
-        pass
+        self.loss = self.criterion(self.output, self.target)
+        self.loss.backward()
             
     def optimize_parameters(self):
         self.forward()
