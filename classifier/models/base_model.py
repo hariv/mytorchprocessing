@@ -68,9 +68,6 @@ class BaseModel():
         self.scheduler.step(self.metric)
         lr = self.optimizer.param_groups[0]['lr']
         print('learning rate = %.7f' % lr)
-        
-    def get_current_loss(self):
-        return float(self.criterion)
 
     def save_networks(self, epoch):
         save_filename = '%s_net_%s_%s.pth' % (epoch, self.net_name, self.name)
