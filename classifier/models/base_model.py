@@ -21,7 +21,8 @@ class BaseModel():
         data = {'num_classes': opt.num_classes}
         
         self.net  = torchvision.models.__dict__[self.net_name](pretrained=opt.pretrained, **data)
-
+        self.net = self.net.to(self.device)
+        
     def set_input(self, input, target):
         self.image = input.to(self.device)
         self.target = target.to(self.device)
@@ -34,7 +35,7 @@ class BaseModel():
     
     def forward(self):
         self.output = self.net(self.image)
-        self.probabilities = torch.nn.Softmax(self.output)
+        self.probabilities = torch.nn.functional.softmax(self.output, dim=1)
     
     def backward(self):
         self.loss = self.criterion(self.output, self.target)
@@ -120,4 +121,3 @@ class BaseModel():
     def set_requires_grad(self, nets, requires_grad=False):
         for param in self.net.parameters():
             param.requires_grad = requires_grad
-        
