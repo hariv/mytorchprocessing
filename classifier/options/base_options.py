@@ -19,8 +19,8 @@ class BaseOptions():
         parser.add_argument('--input_nc', type=int, default=3, help='# of input image channels: 3 for RGB and 1 for grayscale')
 
         parser.add_argument('--no_dropout', action='store_true', help='no dropout for classifier')
-        parser.add_argument('--batch_size', type=int, default=1, help='input batch size')
-        parser.add_argument('--num_classes', type=int, default=2, help='# of output classes')
+        parser.add_argument('--batch_size', type=int, default=256, help='input batch size')
+        parser.add_argument('--num_classes', type=int, default=1000, help='# of output classes')
         parser.add_argument('--pretrained', action='store_true', help='initialize model with pretrained weights from imagenet')
         
         self.initialize = True

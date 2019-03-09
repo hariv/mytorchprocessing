@@ -6,7 +6,9 @@ from data import create_dataset
 
 if __name__ == '__main__':
     opt = TestOptions().parse()
-    dataset = create_dataset(opt)
+    
+    #print(opt)
+    '''dataset = create_dataset(opt)
     model = create_model(opt)
     model.setup(opt)
     
@@ -21,7 +23,7 @@ if __name__ == '__main__':
         prediction = model.get_prediction()
         loss = model.get_loss()
         
-        print("Prediction", prediction)
+        print("Prediction", prediction)'''
         
         
     
