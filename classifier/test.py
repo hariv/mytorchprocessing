@@ -4,6 +4,7 @@ import torch
 
 from models import create_model
 from data import create_dataset
+from util import util
 
 if __name__ == '__main__':
     opt = TestOptions().parse()
@@ -18,8 +19,9 @@ if __name__ == '__main__':
     model.eval()
     
     labels = []
-
-    with open(opt.label_dir+"/"+opt.name+".json") as label_file:
+    util.mkdirs(opt.label_dir)
+    
+    with open(os.path.join(opt.label_dir, opt.name+".json")) as label_file:
         content = label_file.readlines()
         content = [x.strip() for x in content]
         for line in content:
