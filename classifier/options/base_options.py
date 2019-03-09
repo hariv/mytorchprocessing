@@ -23,7 +23,7 @@ class BaseOptions():
         parser.add_argument('--num_classes', type=int, default=1000, help='# of output classes')
         parser.add_argument('--pretrained', action='store_true', help='initialize model with pretrained weights from imagenet')
         
-        self.initialize = True
+        self.initialized = True
         return parser
     
     def gather_options(self):

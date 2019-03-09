@@ -1,6 +1,5 @@
 import os
 from options.test_options import TestOptions
-
 from models import create_model
 from data import create_dataset
 
