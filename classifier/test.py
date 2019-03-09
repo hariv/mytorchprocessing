@@ -16,14 +16,22 @@ if __name__ == '__main__':
         model.setup(opt)
     
     model.eval()
-        
+    
+    labels = []
+
+    with open(opt.label_dir+"/"+opt.name+".json") as label_file:
+        content = label_file.readlines()
+        content = [x.strip() for x in content]
+        for line in content:
+            labels.append(line)
+    
     for i, (input, target) in enumerate(dataset):
         model.set_input(input, target)
         model.test()
-        prediction = model.get_prediction()
-        loss = model.get_loss()
-        
-        print("Prediction", prediction)
+        prediction = torch.argmax(model.get_prediction(), dim=1)
+        prediction = prediction.tolist()
+
+        print(labels[prediction[0]])        
         
         
     
