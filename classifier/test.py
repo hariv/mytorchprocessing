@@ -27,14 +27,15 @@ if __name__ == '__main__':
         for line in content:
             labels.append(line)
     
+    print('----------------- Results  ---------------\n')
+    
     for i, (input, target) in enumerate(dataset):
         model.set_input(input, target)
         model.test()
         prediction = torch.argmax(model.get_prediction(), dim=1)
         prediction = prediction.tolist()
-
-        print(labels[prediction[0]])        
+        print('Image : %s \t Prediction : %s' % (str(i), labels[prediction[0]]))
         
         
-    
+    print('----------------- End  ---------------')
     

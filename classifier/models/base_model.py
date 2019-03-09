@@ -108,7 +108,7 @@ class BaseModel():
         self.net.load_state_dict(state_dict)
         
         
-    def write_networks(self, verbose):
+    def print_networks(self, verbose):
         print('---------- Networks initialized -------------')
         num_params = 0
         for param in self.net.parameters():
