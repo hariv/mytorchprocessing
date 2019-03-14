@@ -1,7 +1,8 @@
 from .base_options import BaseOptions
 
 class TrainOptions(BaseOptions):
-    def initialize(BaseOptions):
+    
+    def initialize(self, parser):
         parser = BaseOptions.initialize(self, parser)
         parser.add_argument('--print_freq', type=int, default=100, help='frequency of showing training results on console')
         parser.add_argument('--save_latest_freq', type=int, default=5000, help='frequency of saving the latest results')
