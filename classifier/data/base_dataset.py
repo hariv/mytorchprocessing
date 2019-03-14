@@ -12,13 +12,11 @@ class BaseDataset(data.Dataset):
         self.root = opt.dataroot
         self.normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         
-        self.preprocess = None
-        if(opt.pretrained):
-            self.preprocess = transforms.Compose([
-                    transforms.Resize(256),
-                    transforms.CenterCrop(224),
-                    transforms.ToTensor(),
-                    self.normalize])
+        self.preprocess = transforms.Compose([
+                transforms.Resize(256),
+                transforms.CenterCrop(224),
+                transforms.ToTensor(),
+                self.normalize])
         
         if(opt.isTrain):
             self.dataset = datasets.ImageFolder(os.path.join(self.root, 'train'), self.preprocess)

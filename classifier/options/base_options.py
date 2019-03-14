@@ -24,7 +24,7 @@ class BaseOptions():
         parser.add_argument('--batch_size', type=int, default=256, help='input batch size')
         parser.add_argument('--num_classes', type=int, default=1000, help='# of output classes')
         parser.add_argument('--pretrained', action='store_true', help='initialize model with pretrained weights from imagenet')
-        
+        parser.add_argument('--verbose', action='store_true', help='if specified, print more debugging information')
         self.initialized = True
         return parser
     

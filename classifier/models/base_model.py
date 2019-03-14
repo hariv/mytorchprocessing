@@ -17,7 +17,8 @@ class BaseModel():
         data = {'num_classes': opt.num_classes}
         self.net = torchvision.models.__dict__[self.net_name](pretrained=opt.pretrained, **data)
         self.net = self.net.to(self.device)
-        self.optimizer = torch.optim.Adam(self.net.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+        if(self.isTrain):
+            self.optimizer = torch.optim.Adam(self.net.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
         self.metric = None
         self.name = opt.name
         self.save_dir = os.path.join(opt.checkpoints_dir, self.name)
@@ -74,7 +75,7 @@ class BaseModel():
         save_path = os.path.join(self.save_dir, save_filename)
         
         if len(self.gpu_ids) > 0 and torch.cuda.is_available():
-            torch.save(self.net.module.cpu().state_dict(), save_path)
+            torch.save(self.net.cpu().state_dict(), save_path)
             self.net.cuda(self.gpu_ids[0])
         else:
             torch.save(self.net.cpu().state_dict(), save_path)
