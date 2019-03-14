@@ -13,15 +13,14 @@ class BaseModel():
         self.device = torch.device('cuda:{}'.format(self.gpu_ids[0])) if self.gpu_ids else torch.device('cpu')
         
         self.criterion = torch.nn.CrossEntropyLoss().cuda()
-        self.optimizer = None
+        self.net_name = opt.model
+        data = {'num_classes': opt.num_classes}
+        self.net = torchvision.models.__dict__[self.net_name](pretrained=opt.pretrained, **data)
+        self.net = self.net.to(self.device)
+        self.optimizer = torch.optim.Adam(self.net.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
         self.metric = None
         self.name = opt.name
-        self.net_name = opt.model
         self.save_dir = os.path.join(opt.checkpoints_dir, self.name)
-        data = {'num_classes': opt.num_classes}
-        
-        self.net  = torchvision.models.__dict__[self.net_name](pretrained=opt.pretrained, **data)
-        self.net = self.net.to(self.device)
         
     def set_input(self, input, target):
         self.image = input.to(self.device)
