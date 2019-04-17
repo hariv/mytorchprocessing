@@ -49,8 +49,7 @@ class BaseDataset(data.Dataset):
         self.mean = sumEl/countEl
             
         for img, _ in self.dataset:
-            img = (img - mean.unsqueeze(1).unsqueeze(1))**2
-            sumel += img.sum([1, 2])
+            img = (img - self.mean.unsqueeze(1).unsqueeze(1))**2
+            sumEl += img.sum([1, 2])
             countEl += torch.numel(img[0])
         self.std = torch.sqrt(sumEl/countEl)
-        
