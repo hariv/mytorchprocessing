@@ -25,7 +25,7 @@ class BaseOptions():
         parser.add_argument('--num_classes', type=int, default=1000, help='# of output classes')
         parser.add_argument('--epoch', type=str, default='latest', help='which epoch to load? set to latest to use latest cached model')
         parser.add_argument('--load_iter', type=int, default='0', help='which iteration to load? if load_iter > 0, the code will load models by iter_[load_iter]; otherwise, the code will load models by [epoch]')
-        parser.add_argument('--pretrained', action='store_true', default=True, help='initialize model with pretrained weights from imagenet')
+        parser.add_argument('--pretrained', action='store_true', help='initialize model with pretrained weights from imagenet')
         parser.add_argument('--verbose', action='store_true', help='if specified, print more debugging information')
         self.initialized = True
         return parser
