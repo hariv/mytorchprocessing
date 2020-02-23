@@ -79,6 +79,12 @@ def validate(args, model, criterion, val_loader):
         
     return sum(val_acc) / float(len(val_acc)), sum(val_loss) / float(len(val_loss))
 
+def init_log(args):
+    file_name = args.log_dir + '/' + args.experiment + '-' + args.network_name + '-log-file.csv'
+    with open(file_name, 'w') as log_file:
+        csv_writer = csv.writer(log_file)
+        csv_writer.writerow(['epoch', 'iteration', 'training_loss', 'training_acc', 'val_loss', 'val_acc'])
+        
 def save_checkpoint(ckpt_dir, experiment, network_name, model, optimizer, accuracy, epoch, iteration):
     file_name = ckpt_dir + '/' + experiment + '-' +  network_name + '-Epoch-' + str(epoch) + '-Iteration-' + str(iteration) + '.pth'
     torch.save(model.state_dict(), file_name)
