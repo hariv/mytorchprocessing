@@ -32,6 +32,8 @@ def train_single_batch(input, target, model, criterion, optimizer):
     # loss is the difference between predicted and target classes
     # The implementation of CrossEntropyLoss will take care of figuring
     # out the predicted class from the output vector (the index of the largest value).
+    #print(output)
+    #print(target_var)
     loss = criterion(output, target_var)
 
     # Clean the optimizer so it doesn't hold onto any values from
@@ -154,7 +156,7 @@ def parse_args():
 def dispatch():
     args = parse_args()
 
-    num_classes = len(args.classes.split('.'))
+    num_classes = len(args.classes.split(','))
 
     # Works with any standard network supported by Pytorch. Write custom model class to use custom model.
     # Extend the final layer of the pretrained imagenet model having 1000 classes to have as many classes as needed for the problem
