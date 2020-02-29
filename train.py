@@ -131,7 +131,7 @@ def parse_args():
     parser.add_argument('--network', default='alexnet', type=str, dest='network_name', help='which model to use')
     parser.add_argument('--experiment', default='sample_classification', type=str, dest='experiment', help='name of the experiment')
     parser.add_argument('--workers', default=0, type=int, metavar='N', help='number of data loading workers')
-    parser.add_argument('--classes', default='class_1,class_2', type='str', dest='classes', help='name of classes')
+    parser.add_argument('--classes', default='class_1,class_2', type=str, dest='classes', help='name of classes')
     parser.add_argument('--epochs', default=1000, type=int, metavar='N', help='number of training epochs to run for')
     parser.add_argument('--start_epoch', default=0, type=int, metavar='N', help='epoch number from which to restart training')
     parser.add_argument('-b', '--batch_size', default=256, type=int, metavar='N', help='mini-batch size')
@@ -158,7 +158,7 @@ def dispatch():
 
     # Works with any standard network supported by Pytorch. Write custom model class to use custom model.
     # Extend the final layer of the pretrained imagenet model having 1000 classes to have as many classes as needed for the problem
-    model = nn.Sequential(models.__dict__[args.arch](pretrained=args.pretrained), nn.Linear(1000, num_classes)).cuda()
+    model = nn.Sequential(models.__dict__[args.network_name](pretrained=args.pretrained), nn.Linear(1000, num_classes)).cuda()
 
     # Loss definition
     criterion = nn.CrossEntropyLoss().cuda()
