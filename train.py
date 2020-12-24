@@ -82,6 +82,7 @@ def validate(args, model, criterion, val_loader):
     return sum(val_acc) / float(len(val_acc)), sum(val_loss) / float(len(val_loss))
 
 def init_log(args):
+    print('Initalizing log')
     file_name = args.log_dir + '/' + args.experiment + '-' + args.network_name + '-log-file.csv'
     with open(file_name, 'w') as log_file:
         csv_writer = csv.writer(log_file)
@@ -92,7 +93,7 @@ def save_checkpoint(ckpt_dir, experiment, network_name, model, optimizer, accura
     torch.save(model.state_dict(), file_name)
 
 def write_log(log_dir, experiment, network_name, epoch, iteration, training_loss, training_accuracy, val_loss, val_accuracy):
-    file_name = log_dir + '/' + experiment + '' +  network_name + '-log-file.csv'
+    file_name = log_dir + '/' + experiment + '-' +  network_name + '-log-file.csv'
     with open(file_name, 'a') as log_file:
         csv_writer = csv.writer(log_file)
         csv_writer.writerow([epoch, iteration, training_loss, training_accuracy, val_loss, val_accuracy])
@@ -148,9 +149,9 @@ def parse_args():
     parser.add_argument('-lh', default=400, type=int, dest='height', help='image height fed to model')
     parser.add_argument('--ckpt_dir', default='./checkpoints', type=str, dest='ckpt_dir', help='location of saved checkpoints')
     parser.add_argument('--log_dir', default='./logs', type=str, dest='log_dir', help='location to save logs')
-    parser.add_argument('--niter_eval', default=20, type=int, dest='niter_eval', help='Number of iterations to run before evaluating on validation set')
-    parser.add_argument('--niter_save', default=20, type=int, dest='niter_save', help='Number of iterations to run before checking to save model')
-    parser.add_argument('--nval_images', default=20, type=int, dest='nval_images', help='Number of images to validate model on')
+    parser.add_argument('--niter_eval', default=50, type=int, dest='niter_eval', help='Number of iterations to run before evaluating on validation set')
+    parser.add_argument('--niter_save', default=50, type=int, dest='niter_save', help='Number of iterations to run before checking to save model')
+    parser.add_argument('--nval_images', default=50, type=int, dest='nval_images', help='Number of images to validate model on')
     return parser.parse_args()
 
 def dispatch():
@@ -165,7 +166,7 @@ def dispatch():
     # Loss definition
     criterion = nn.CrossEntropyLoss().cuda()
     # Optimizer definition that takes care of updating gradient descent weights
-    optimizer = torch.optim.Adam(model.parameters(), args.lr, betas=(args.beta, 0.999))
+    optimizer = torch.optim.SGD(model.parameters(), args.lr, momentum=0.9, weight_decay=0.0001)
     iteration = 0
 
     # Option to load a previously trained model to continue training or evaluation.
@@ -184,14 +185,14 @@ def dispatch():
     cudnn.benchmark = True
     
     traindir = os.path.join(args.data, 'train')
-    valdir = os.path.join(args.data, 'val')
+    valdir = os.path.join(args.data, 'valid')
 
     # Normalize inputs based on imagenet values.
     # Imagenet covers millions of natural images.
     # It's usually a good idea to use these values
     # if you're also going to be working on natural images.
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.226, 0.226, 0.226])
+                                     std=[0.229, 0.224, 0.225])
     
     print("Loading training data....")
 
@@ -232,6 +233,7 @@ def dispatch():
         validate(args, model, criterion, val_loader)
         return
 
+    init_log(args)
     train(args, model, criterion, optimizer, train_loader, val_loader, iteration)
 
 if __name__ == '__main__':
