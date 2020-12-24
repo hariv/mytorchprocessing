@@ -83,24 +83,30 @@ def validate(args, model, criterion, val_loader):
 
 def init_log(args):
     print('Initalizing log')
-    file_name = args.log_dir + '/' + args.experiment + '-' + args.network_name + '-log-file.csv'
+    file_name = (args.log_dir + '/' + args.experiment + '-' +
+                 args.network_name + '-log-file.csv')
     with open(file_name, 'w') as log_file:
         csv_writer = csv.writer(log_file)
-        csv_writer.writerow(['epoch', 'iteration', 'training_loss', 'training_acc', 'val_loss', 'val_acc'])
+        csv_writer.writerow(['epoch', 'iteration', 'training_loss',
+                             'training_acc', 'val_loss', 'val_acc'])
         
-def save_checkpoint(ckpt_dir, experiment, network_name, model, optimizer, accuracy, epoch, iteration):
-    file_name = ckpt_dir + '/' + experiment + '-' +  network_name + '-Epoch-' + str(epoch) + '-Iteration-' + str(iteration) + '.pth'
+def save_checkpoint(ckpt_dir, experiment, network_name, model, optimizer,
+                    accuracy, epoch, iteration):
+    file_name = (ckpt_dir + '/' + experiment + '-' +  network_name +
+                 '-Epoch-' + str(epoch) + '-Iteration-' + str(iteration) + '.pth')
     torch.save(model.state_dict(), file_name)
 
-def write_log(log_dir, experiment, network_name, epoch, iteration, training_loss, training_accuracy, val_loss, val_accuracy):
+def write_log(log_dir, experiment, network_name, epoch, iteration,
+              training_loss, training_accuracy, val_loss, val_accuracy):
     file_name = log_dir + '/' + experiment + '-' +  network_name + '-log-file.csv'
     with open(file_name, 'a') as log_file:
         csv_writer = csv.writer(log_file)
-        csv_writer.writerow([epoch, iteration, training_loss, training_accuracy, val_loss, val_accuracy])
+        csv_writer.writerow([epoch, iteration, training_loss,
+                             training_accuracy, val_loss, val_accuracy])
 
 def train(args, model, criterion, optimizer, train_loader, val_loader, iteration):
-    train_acc = []
-    train_loss = []
+    #train_acc = []
+    #train_loss = []
 
     # One epoch is one full look through the entire training set.
     for epoch in range(args.start_epoch, args.epochs):
@@ -111,9 +117,9 @@ def train(args, model, criterion, optimizer, train_loader, val_loader, iteration
         # calculation is done on the entire batch.
         for i, (input, target) in enumerate(train_loader):
             print("Training Epoch: " + str(epoch) + " iteration: " + str(iteration))
-            batch_train_acc, batch_train_loss = train_single_batch(input, target, model, criterion, optimizer)
-            train_acc.append(batch_train_acc.item())
-            train_loss.append(batch_train_loss.item())
+            (batch_train_acc,
+             batch_train_loss) = train_single_batch(input, target, model,
+                                                    criterion, optimizer)
             
             iteration += 1
 
@@ -121,11 +127,14 @@ def train(args, model, criterion, optimizer, train_loader, val_loader, iteration
             if iteration % args.niter_eval == 0:
                 print("Validating")
                 val_acc, val_loss = validate(args, model, criterion, val_loader)
-                write_log(args.log_dir, args.experiment, args.network_name, epoch, iteration, sum(train_loss) / float(len(train_loss)), sum(train_acc) / float(len(train_acc)), val_loss, val_acc)
+                write_log(args.log_dir, args.experiment, args.network_name, epoch,
+                          iteration, train_loss.item(), train_acc.item(), val_loss,
+                          val_acc)
 
             # Checkpoint every few iterations
             if iteration % args.niter_save == 0: 
-                save_checkpoint(args.ckpt_dir, args.experiment, args.network_name, model, optimizer, val_acc, epoch, iteration)
+                save_checkpoint(args.ckpt_dir, args.experiment, args.network_name,
+                                model, optimizer, val_acc, epoch, iteration)
     print('Finished training')
 
 def parse_args():
@@ -161,7 +170,8 @@ def dispatch():
 
     # Works with any standard network supported by Pytorch. Write custom model class to use custom model.
     # Extend the final layer of the pretrained imagenet model having 1000 classes to have as many classes as needed for the problem
-    model = nn.Sequential(models.__dict__[args.network_name](pretrained=args.pretrained), nn.Linear(1000, num_classes)).cuda()
+    model = nn.Sequential(models.__dict__[args.network_name](pretrained=args.pretrained),
+                          nn.Linear(1000, num_classes)).cuda()
 
     # Loss definition
     criterion = nn.CrossEntropyLoss().cuda()
