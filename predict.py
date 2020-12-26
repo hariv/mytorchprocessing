@@ -19,6 +19,7 @@ import torchvision.models as models
 
 def predict(model, test_tensor, classes):
     test_tensor = test_tensor.permute(0, 3, 1, 2).type(torch.FloatTensor).cuda()
+        
     with torch.no_grad():
         input_var = torch.autograd.Variable(test_tensor)
         
@@ -46,6 +47,7 @@ def parse_args():
     parser.add_argument('--network', default='alexnet', type=str, dest='network_name', help='which model to use')
     parser.add_argument('--experiment', default='sample_classification', type=str, dest='experiment', help='name of the experiment')
     parser.add_argument('--workers', default=0, type=int, metavar='N', help='number of data loading workers')
+    parser.add_argument('--use_gpu', dest='use_gpu', action='store_true', help='flag to run on GPU')
     parser.add_argument('--classes', default='class_1,class_2', type=str, dest='classes', help='name of classes')
     parser.add_argument('--resume', default='', type=str, metavar='PATH', help='path to latest checkpoint')
     parser.add_argument('-lw', default=224, type=int, dest='width', help='image width fed to model')
@@ -62,7 +64,11 @@ def dispatch():
     
     if os.path.isfile(args.resume):
         print("=> loading checkpoint '{}'".format(args.resume))
-        model.load_state_dict(torch.load(args.resume))
+        if args.use_gpu:
+            model.load_state_dict(torch.load(args.resume))
+        else:
+            model.load_state_dict(torch.load(args.resume,
+                                             map_location=torch.device("cpu")))
         print("=> loaded checkpoint '{}'".format(args.resume))
     else:
         print("=> no checkpoint found at '{}'".format(args.resume))
