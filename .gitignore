@@ -1,2 +1,6 @@
 *~
 *.pyc
+venv/
+test_images/
+lr_*
+incoming.png

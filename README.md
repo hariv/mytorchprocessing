@@ -1,5 +1,4 @@
-MyTorch Processing
-==================
+# MyTorch Processing
 
 ### Processing code for mytorch cloud machine learning framework.
 
@@ -10,3 +9,25 @@ python train.py --network <network_name (alexnet,resnet,vgg etc)> --experiment <
 ```
 
 Pass `--evaluate` flag to evaluate trained model
+
+## Run the service
+
+Note: you will have to install Flask `pip install Flask`
+
+```
+python app.py
+```
+
+## Test the api
+
+```
+POST http://localhost:5000/predict
+```
+
+body:
+
+```
+{
+  image: <base64>
+}
+```
