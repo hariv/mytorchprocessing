@@ -19,6 +19,7 @@ import torchvision.models as models
 
 
 def predict(model, test_tensor, classes):
+    model.eval()
     test_tensor = test_tensor.permute(0, 3, 1, 2).type(torch.FloatTensor)
 
     with torch.no_grad():
