@@ -8,6 +8,7 @@ import cv2
 import torch
 import random
 import numpy as np
+from PIL import Image
 import torch.nn as nn
 import torch.nn.parallel
 import torch.backends.cudnn as cudnn
@@ -20,30 +21,14 @@ import torchvision.models as models
 
 def predict(model, test_tensor, classes):
     model.eval()
-    test_tensor = test_tensor.permute(0, 3, 1, 2).type(torch.FloatTensor)
-
+    test_tensor = test_tensor.type(torch.FloatTensor)
+    
     with torch.no_grad():
         input_var = torch.autograd.Variable(test_tensor)
 
     output = model(input_var)
     _, prediction = torch.max(output, 1)
     return classes[prediction.data.tolist()[0]]
-
-
-def load_test_tensor(image_path, lw, lh):
-    MEANS = [123.68, 116.28, 103.53]
-    STDS = [58.40, 57.12, 57.38]
-
-    test_image = cv2.imread(image_path)
-    test_image = cv2.resize(test_image, (lw, lh),
-                            interpolation=cv2.INTER_LANCZOS4)
-    for i in range(3):
-        test_image[:, :, i] = (test_image[:, :, i] - MEANS[i]) / STDS[i]
-
-    test_image = np.expand_dims(test_image, axis=0)
-
-    return torch.from_numpy(test_image)
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description='PyTorch classifier')
@@ -66,6 +51,21 @@ def parse_args():
                         dest='height', help='image height fed to model')
     return parser.parse_args()
 
+def _normalizer():
+    MEAN = [0.485, 0.456, 0.406]
+    STD = [0.229, 0.224, 0.225]
+    
+    return transforms.Normalize(mean=MEAN, std=STD)
+
+def _transformer(width, height):
+    transformer = []
+    transformer.append(transforms.Resize((height, width)))
+    transformer.append(transforms.ToTensor())
+    transformer.append(_normalizer())
+    return transforms.Compose(transformer)
+
+def load_test_tensor(image_path, transformer):
+    return transformer(Image.open(image_path).convert("RGB")).unsqueeze(0)
 
 def dispatch():
     args = parse_args()
@@ -92,11 +92,9 @@ def dispatch():
     if not os.path.exists(args.image):
         print("=> {} does not exist".format(args.image))
 
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225])
-
     print("Loading test image....")
-    test_tensor = load_test_tensor(args.image, args.width, args.height)
+    transformer = _transformer(args.width, args.height)
+    test_tensor = load_test_tensor(args.image, transformer)
     print("Loaded")
 
     prediction = predict(model, test_tensor, args.classes.split(','))
@@ -117,12 +115,10 @@ def dispatch_with_config(config, input_image_path):
     if not os.path.exists(input_image_path):
         print("=> {} does not exist".format(input_image_path))
 
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225])
-
     print("Loading test image....")
-    test_tensor = load_test_tensor(
-        input_image_path, config['width'], config['height'])
+    transformer = _transformer(config['width'], config['height'])
+    test_tensor = load_test_tensor(input_image_path, transformer)
+    
     print("Loaded")
 
     prediction = predict(model, test_tensor, config['classes'])

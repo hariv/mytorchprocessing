@@ -71,6 +71,7 @@ def validate(args, model, criterion, val_loader):
             target_var = torch.autograd.Variable(target)
 
         output = model(input_var)
+        print(output)
         loss = criterion(output, target_var)
         
         _, prediction = torch.max(output, 1)
@@ -183,8 +184,8 @@ def dispatch():
     if args.resume:
         if os.path.isfile(args.resume):
             print("=> loading checkpoint '{}'".format(args.resume))
-            model.load_state_dict(args.resume)
-            print("=> loaded checkpoint '{}' (epoch {})".format(args.resume, checkpoint['epoch']))
+            model.load_state_dict(torch.load(args.resume))
+            print("Loaded")
         else:
             print("=> no checkpoint found at '{}'".format(args.resume))
     else:
@@ -234,13 +235,14 @@ def dispatch():
         datasets.ImageFolder(valdir, transforms.Compose([
                     transforms.Resize((args.height, args.width)),
                     transforms.ToTensor(), normalize])),
-        batch_size=args.nval_images, shuffle=True, num_workers=args.workers,
+        batch_size=args.nval_images, shuffle=False, num_workers=args.workers,
         pin_memory=True)
     print("Loaded")
 
     # Onlt run validation
     if args.evaluate:
-        validate(args, model, criterion, val_loader)
+        val_acc, val_loss = validate(args, model, criterion, val_loader)
+        print(val_acc)
         return
 
     init_log(args)
